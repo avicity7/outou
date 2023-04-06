@@ -63,7 +63,7 @@ const Team = () => {
   const getRoomQuestions = async (roomCode: any) => {
     await onSnapshot(doc(firestore, 'rooms', roomCode), (docSnap) => {
       let data = docSnap.data()
-      setQuestions(data?.questions)
+      setQuestions(data?.questions.reverse())
     })
   }
 

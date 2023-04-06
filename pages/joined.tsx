@@ -1,7 +1,10 @@
 import { Stack, Text, Textarea } from "@chakra-ui/react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { getDocs, setDoc, doc, collection, onSnapshot } from "@firebase/firestore"
 import { firestore } from "../utils/firebase"
+var rand = require('csprng')
+
+import QuestionCard from "@/components/questionCard"
 
 const Joined = () => {
   const [question, setQuestion] = useState('')
@@ -11,7 +14,7 @@ const Joined = () => {
     let roomCode = localStorage.getItem('joinedRoom')
     await onSnapshot(doc(firestore, 'rooms', String(roomCode)), (docSnap) => {
       let data = docSnap.data()
-      setQuestions(data?.questions)
+      setQuestions(data?.questions.reverse())
     })
   }
 
@@ -19,7 +22,7 @@ const Joined = () => {
     getRoomQuestions()
     let roomCode = localStorage.getItem('joinedRoom')
     const ref = doc(firestore, "rooms", String(roomCode))
-    questions.push({question:question, answer:null})
+    questions.push({question:question, answer:null, author: localStorage.getItem('identity')})
     let data = {
       questions: questions
     }
@@ -31,6 +34,12 @@ const Joined = () => {
       console.log(err)
     }
   }
+
+  useEffect(() => {
+    if (localStorage.getItem('identity') === null) {
+      localStorage.setItem('identity',rand(120,36))
+    }
+  },[])
 
   return ( 
     <div className="flex h-screen">
@@ -44,6 +53,18 @@ const Joined = () => {
             </button>
           </div>
         </form>
+        <Text className="flex justify-center font-shippori text-gray-400 pt-5">My Questions</Text>
+        <ul>
+          {questions.map((question: any) => {
+            if (question.author === localStorage.getItem('identity')) {
+              return (
+                <li key={question.question}>
+                  <QuestionCard question={question} onClick={null} setAnswer={null} addAnswer={null} />
+                </li>
+              )
+            }
+          })}
+        </ul>
       </Stack>
     </div>
   )
