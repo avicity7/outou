@@ -5,6 +5,7 @@ import { firestore } from "../utils/firebase"
 import { Icon } from '@iconify-icon/react'
 import { useRouter } from "next/router"
 var rand = require('csprng')
+let creating = false
 
 const generateRandomRoom = () => {
   return new Promise(resolve => {
@@ -21,33 +22,44 @@ const generateRandomRoom = () => {
   })
 }
 
-
-const Host = () => {
-  const router = useRouter()
-  const [roomCode, setRoomCode] = useState('')
-  const [questions, setQuestions] =  useState<any | null>([]);
-
-  const closeRoom = async () => {
-    router.back()
-    await deleteDoc(doc(firestore, 'rooms', roomCode))
-    localStorage.setItem('room','')
-  }
-
-  const createRoom = async () => {
+const createRoom = async () => {
+  if (!creating) {
+    creating = !creating
     const roomId = await generateRandomRoom()
     const ref = doc(firestore, "rooms", String(roomId))
+    if (localStorage.getItem('accessCode') === null || localStorage.getItem('accessCode') === '') {
+      localStorage.setItem('accessCode',String(rand(30,36)))
+    }
     let data = {
       questions: [],
-      accessCode: rand(30,36)
+      accessCode: localStorage.getItem('accessCode')
     }
     try {
       setDoc(ref,data)
-      setRoomCode(String(roomId))
       localStorage.setItem('room',String(roomId))
     }
     catch(err) {
       console.log(err)
     }
+    creating = !creating
+  }
+}
+
+const copyLink = () => {
+  navigator.clipboard.writeText(`http://localhost:3000/team?room=${localStorage.getItem('room')}&accessCode=${localStorage.getItem('accessCode')}`)
+}
+
+
+const Host = () => {
+  const router = useRouter()
+  const [roomCode, setRoomCode] = useState('')
+  const [questions, setQuestions] =  useState<any | null>([])
+
+  const closeRoom = async () => {
+    router.back()
+    await deleteDoc(doc(firestore, 'rooms', roomCode))
+    localStorage.removeItem('room')
+    localStorage.removeItem('accessCode')
   }
 
   const getRoomQuestions = async (roomCode: any) => {
@@ -73,8 +85,14 @@ const Host = () => {
   }
 
   useEffect(() => {
+    const getRoomCode = async () => {
+      await createRoom()
+      let roomCode = localStorage.getItem('room')
+      setRoomCode(roomCode as any)
+    }
+
     if (localStorage.getItem('room') === null || localStorage.getItem('room') === '') {
-      createRoom()
+      getRoomCode()
     }
     else {
       setRoomCode(localStorage.getItem('room') as any)
@@ -98,7 +116,7 @@ const Host = () => {
               <button onClick={closeRoom}>
                 <Text className="text-white rounded-full text-md bg-red-400 hover:bg-red-500 px-5 py-0.5">Close Room</Text>
               </button>
-              <button onClick={closeRoom}>
+              <button onClick={copyLink}>
                <Text className="text-sm text-blue-400 hover:text-blue-500 mt-3 pb-10">Share Admin Access</Text>
               </button>
               <Text className="font-shippori text-lg font-light text-gray-400 text-center">Questions</Text>
