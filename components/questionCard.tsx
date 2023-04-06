@@ -16,7 +16,7 @@ const QuestionCard = ({question,onClick,setAnswer,addAnswer}: any) => {
                 </button>
               }
             </div>
-            <Text className="text-xl text-left mb-5">{question.question}</Text>
+            <Text className="font-outfit text-xl text-left mb-5">{question.question}</Text>
             {question.answer !== null &&
               <>
               <Text className="font-shippori text-md text-green-700 mb-2">Answer</Text>
