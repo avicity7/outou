@@ -249,7 +249,7 @@ const Host = () => {
               </Transition>
               <Text className="font-shippori text-lg font-light text-gray-400 text-center">Questions</Text>
               <ul>
-                {questions.map((question: any) => {
+                {questions.reverse().map((question: any) => {
                   return (
                     <li key={question.question}>
                       <QuestionCard question={question} onClick={() => {removeQuestion(question)}} setAnswer={(e: any) => {setAnswer(e.target.value)}} addAnswer={() => {addAnswer(question, answer)}}/>
