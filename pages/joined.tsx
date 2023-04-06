@@ -10,6 +10,22 @@ const Joined = () => {
   const [question, setQuestion] = useState('')
   const [questions, setQuestions] =  useState<object[]>([])
 
+  const removeQuestion = async (question: any) => {
+    let roomCode = localStorage.getItem('joinedRoom')
+    const ref = doc(firestore, "rooms", String(roomCode))
+    questions.splice(questions.indexOf(question),1)
+    let data = {
+      questions: questions
+    }
+    try {
+      setDoc(ref,data)
+      localStorage.setItem('room',String(roomCode))
+    }
+    catch(err) {
+      console.log(err)
+    }
+  }
+
   const getRoomQuestions = async () => {
     let roomCode = localStorage.getItem('joinedRoom')
     await onSnapshot(doc(firestore, 'rooms', String(roomCode)), (docSnap) => {
@@ -60,7 +76,7 @@ const Joined = () => {
             if (question.author === localStorage.getItem('identity')) {
               return (
                 <li key={question.question}>
-                  <QuestionCard question={question} onClick={null} setAnswer={null} addAnswer={null} />
+                  <QuestionCard question={question} onClick={() => {removeQuestion(question)}} setAnswer={null} addAnswer={null} />
                 </li>
               )
             }
