@@ -37,9 +37,9 @@ const Joined = () => {
       <Stack className="m-auto">
         <Text className="font-outfit text-2xl font-regular text-center mb-5">Ask a Question</Text>
         <form onSubmit={submitQuestion}>
-          <Textarea focusBorderColor="black" onChange={(e) => {setQuestion(e.target.value)}}/>
+          <Textarea autoCapitalize="off" focusBorderColor="black" onChange={(e) => {setQuestion(e.target.value)}}/>
           <div className="flex justify-center">
-            <button onClick={(e) => {e.preventDefault();submitQuestion()}}>
+            <button onClick={(e) => {e.preventDefault(); if (question !== '') submitQuestion()}}>
              <Text className="font-outfit text-lg font-regular px-3 py-1 bg-gray-800 hover:bg-gray-900 text-white rounded-full mt-5">Ask</Text>
             </button>
           </div>
