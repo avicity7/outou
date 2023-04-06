@@ -21,12 +21,41 @@ const generateRandomRoom = () => {
   })
 }
 
+export async function getServerSideProps(ctx: any) {
+  const roomCode = ctx.query.room
+  const accessCode = ctx.query.accessCode
+  
+  const getAccessCode = () => {
+    return new Promise(resolve => {
+      onSnapshot(doc(firestore, 'rooms', roomCode), (docSnap) => {
+        let data = docSnap.data()
+        if (data?.accessCode === accessCode) {
+          resolve(true)
+        }
+        else {
+          resolve(false)
+        }
+      })
+    })
+  }
+
+  let found = await getAccessCode()
+  
+  if (!found) {
+    return {
+      notFound: true
+    }
+  }
+  return {
+    props: {}
+  }
+}
+
 
 const Team = () => {
   const router = useRouter()
   const [roomCode, setRoomCode] = useState('')
   const [questions, setQuestions] =  useState<any | null>([])
-  console.log(router.query.room)
 
   const getRoomQuestions = async (roomCode: any) => {
     await onSnapshot(doc(firestore, 'rooms', roomCode), (docSnap) => {
@@ -95,5 +124,7 @@ const Team = () => {
     </div>
   )
 }
+
+
 
 export default Team 
