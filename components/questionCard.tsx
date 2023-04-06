@@ -10,7 +10,7 @@ const QuestionCard = ({question,onClick,setAnswer,addAnswer}: any) => {
           <CardBody>
             <div className="flex flex-row justify-between items-center mb-2">
               <Text className="font-shippori text-md text-red-700">Question</Text>
-              {onclick !== null && 
+              {onClick !== null && 
                 <button className="flex justify-center text-gray-300 hover:text-red-400" onClick={onClick}>
                 <Icon icon="ph:trash-simple-bold"/>
                 </button>
