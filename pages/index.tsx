@@ -8,9 +8,9 @@ const Home = () => {
     <>
       <div className="flex h-screen">
         <Stack className="m-auto">
-          <Text className="font-shippori text-center text-md">シ　ツ</Text>
-          <Text className="font-shippori text-center text-md">モ　ン</Text>
-          <Text className="font-shippori text-center text-4xl pb-20">shitsumon</Text>
+          <Text className="font-shippori text-center text-md">オ　ウ</Text>
+          <Text className="font-shippori text-center text-md">ト　ウ</Text>
+          <Text className="font-shippori text-center text-3xl pb-20">outou</Text>
           <button onClick={() => {router.push('/join')}}>
             <Text className="font-outfit text-xl font-regular px-5 py-2 bg-gray-800 hover:bg-gray-900 text-white rounded-full mb-5">Join a Room</Text>
           </button>
