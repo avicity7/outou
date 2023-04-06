@@ -32,7 +32,7 @@ const Join = () => {
       <Stack className="m-auto">
         <Text className="font-shippori text-2xl font-regular text-center mb-5">Enter Room code</Text>
         <form onSubmit={joinRoom}>
-          <Input onChange={(e) => {setRoomCode(e.target.value)}}/>
+          <Input focusBorderColor="black" onChange={(e) => {setRoomCode(e.target.value)}}/>
           {error !== '' &&
             <div className="flex justify-center">
               <Text className="font-outfit font-semibold text-red-400 pt-2">{error}</Text>
