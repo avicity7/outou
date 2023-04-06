@@ -4,14 +4,21 @@ import { getDocs, setDoc, doc, collection, onSnapshot, deleteDoc } from "@fireba
 import { firestore } from "../utils/firebase"
 import { Icon } from '@iconify-icon/react'
 import { useRouter } from "next/router"
+var rand = require('csprng')
 
-const getLastRoomID = async() => {
-  let roomArray = Array()
-  const rooms = await getDocs(collection(firestore, 'rooms'))
-  rooms.forEach((room) => {
-    roomArray.push(room.id)
+const generateRandomRoom = () => {
+  return new Promise(resolve => {
+    let generatedNumber = rand(30,36)
+    onSnapshot(doc(firestore, 'rooms', generatedNumber), (docSnap) => {
+      let data = docSnap.data()
+      if (data !== undefined) {
+        generateRandomRoom()
+      }
+      else { 
+        resolve(generatedNumber)
+      }
+    })
   })
-  return parseInt(roomArray[roomArray.length - 1]) + 1
 }
 
 
@@ -27,15 +34,16 @@ const Host = () => {
   }
 
   const createRoom = async () => {
-    const lastRoomID = await getLastRoomID()
-    const ref = doc(firestore, "rooms", String(lastRoomID))
+    const roomId = await generateRandomRoom()
+    const ref = doc(firestore, "rooms", String(roomId))
     let data = {
-      questions: []
+      questions: [],
+      accessCode: rand(30,36)
     }
     try {
       setDoc(ref,data)
-      setRoomCode(String(lastRoomID))
-      localStorage.setItem('room',String(lastRoomID))
+      setRoomCode(String(roomId))
+      localStorage.setItem('room',String(roomId))
     }
     catch(err) {
       console.log(err)
@@ -77,7 +85,7 @@ const Host = () => {
   return (
     <div className="flex justify-center mt-10 font-outfit">
       <Stack>
-        <Text className="text-xl">Your Room Code is</Text>
+        <Text className="text-xl text-center">Your Room Code is</Text>
         {roomCode === '' &&
           <div className="flex flex-row justify-center">
             <Spinner />
@@ -88,7 +96,10 @@ const Host = () => {
             <Stack>
               <Text className="text-3xl font-semibold mb-3 text-center">{roomCode}</Text>
               <button onClick={closeRoom}>
-                <Text className="text-white rounded-full text-md bg-red-400 hover:bg-red-500 px-5 py-0.5 mb-20">Close Room</Text>
+                <Text className="text-white rounded-full text-md bg-red-400 hover:bg-red-500 px-5 py-0.5">Close Room</Text>
+              </button>
+              <button onClick={closeRoom}>
+               <Text className="text-sm text-blue-400 hover:text-blue-500 mt-3 pb-10">Share Admin Access</Text>
               </button>
               <Text className="font-shippori text-lg font-light text-gray-400 text-center">Questions</Text>
               <ul>
