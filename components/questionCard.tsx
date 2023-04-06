@@ -20,7 +20,7 @@ const QuestionCard = ({question,onClick,setAnswer,addAnswer}: any) => {
             {question.answer !== null &&
               <>
               <Text className="font-shippori text-md text-green-700 mb-2">Answer</Text>
-              <Text className="text-xl text-left mb-5">{question.answer}</Text>
+              <Text className="font-outfit text-xl text-left mb-5">{question.answer}</Text>
               </>
             }
             {!open && question.answer === null && addAnswer !== null &&
