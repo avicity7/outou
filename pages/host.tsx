@@ -46,7 +46,7 @@ const createRoom = async () => {
 }
 
 const copyLink = () => {
-  navigator.clipboard.writeText(`http://localhost:3000/team?room=${localStorage.getItem('room')}&accessCode=${localStorage.getItem('accessCode')}`)
+  navigator.clipboard.writeText(`https://outou.vercel.app/team?room=${localStorage.getItem('room')}&accessCode=${localStorage.getItem('accessCode')}`)
 }
 
 
