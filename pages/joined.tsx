@@ -36,8 +36,9 @@ const Joined = () => {
   }
 
   useEffect(() => {
+    getRoomQuestions()
     if (localStorage.getItem('identity') === null) {
-      localStorage.setItem('identity',rand(120,36))
+      localStorage.setItem('identity',String(rand(120,36)))
     }
   },[])
 
