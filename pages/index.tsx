@@ -18,7 +18,7 @@ const Home = () => {
             <Text className="font-outfit text-xl font-regular px-5 py-2 bg-gray-800 hover:bg-gray-900 text-white rounded-full mb-5">Host a Room</Text>
           </button>
         </Stack>
-        <Text className='font-shippori text-sm absolute bottom-0 left-1/2 -translate-x-1/2 -translate-y-1/2 pb-2'>Created with ♥ by <a className="hover:underline" href="https://github.com/avicity7">avicity7</a></Text>
+        <Text className='font-shippori text-sm absolute bottom-0 left-1/2 -translate-x-1/2 -translate-y-1/2 pb-2'>Created with <span className="text-red-400">♥</span> by <a className="underline hover:text-blue-400" href="https://github.com/avicity7" target="_blank">avicity7</a></Text>
       </div>
     </>
   )
