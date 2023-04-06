@@ -5,7 +5,7 @@ import { firestore } from "../utils/firebase"
 
 const Joined = () => {
   const [question, setQuestion] = useState('')
-  const [questions, setQuestions] =  useState<string[]>([])
+  const [questions, setQuestions] =  useState<object[]>([])
 
   const getRoomQuestions = async () => {
     let roomCode = localStorage.getItem('joinedRoom')
@@ -19,7 +19,7 @@ const Joined = () => {
     getRoomQuestions()
     let roomCode = localStorage.getItem('joinedRoom')
     const ref = doc(firestore, "rooms", String(roomCode))
-    questions.push(question)
+    questions.push({question:question, answer:null})
     let data = {
       questions: questions
     }

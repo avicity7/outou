@@ -6,6 +6,8 @@ import { Icon } from '@iconify-icon/react'
 import { useRouter } from "next/router"
 var rand = require('csprng')
 
+import QuestionCard from "@/components/questionCard"
+
 const generateRandomRoom = () => {
   return new Promise(resolve => {
     let generatedNumber = rand(30,36)
@@ -56,6 +58,7 @@ const Team = () => {
   const router = useRouter()
   const [roomCode, setRoomCode] = useState('')
   const [questions, setQuestions] =  useState<any | null>([])
+  const [answer, setAnswer] = useState('')
 
   const getRoomQuestions = async (roomCode: any) => {
     await onSnapshot(doc(firestore, 'rooms', roomCode), (docSnap) => {
@@ -73,6 +76,22 @@ const Team = () => {
     try {
       setDoc(ref,data)
       localStorage.setItem('room',String(roomCode))
+    }
+    catch(err) {
+      console.log(err)
+    }
+  }
+
+  const addAnswer = async (question: any, answer:any) => {
+    getRoomQuestions(localStorage.getItem('room'))
+    let roomCode = localStorage.getItem('room')
+    const ref = doc(firestore, "rooms", String(roomCode))
+    questions[questions.indexOf(question)].answer = answer
+    let data = {
+      questions: questions
+    }
+    try {
+      setDoc(ref,data,{merge: true})
     }
     catch(err) {
       console.log(err)
@@ -100,22 +119,13 @@ const Team = () => {
               <Text className="text-3xl font-semibold mb-3 text-center">{roomCode}</Text>
               <Text className="font-shippori text-lg font-light text-gray-400 text-center">Questions</Text>
               <ul>
-                {questions.map((question: any) => (
-                  <li key={question}>
-                    <div>
-                      <Card className="my-5">
-                        <CardBody>
-                          <div className="flex flex-row justify-between items-center">
-                            <Text className="text-xl mr-3 text-center">{question}</Text>
-                            <button className="flex justify-center text-gray-300 hover:text-red-400" onClick={() => {removeQuestion(question)}}>
-                             <Icon icon="ph:trash-simple-bold"/>
-                            </button>
-                          </div>
-                        </CardBody>
-                      </Card>
-                    </div>
-                  </li>
-                ))}
+                {questions.map((question: any) => {
+                  return (
+                    <li key={question.question}>
+                      <QuestionCard question={question} onClick={() => {removeQuestion(question)}} setAnswer={(e: any) => {setAnswer(e.target.value)}} addAnswer={() => {addAnswer(question, answer)}}/>
+                    </li>
+                  )
+                })}
               </ul>
             </Stack>
           </div>
