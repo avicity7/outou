@@ -74,7 +74,7 @@ const Team = () => {
       questions: questions
     }
     try {
-      setDoc(ref,data)
+      setDoc(ref,data,{merge: true})
       localStorage.setItem('room',String(roomCode))
     }
     catch(err) {
