@@ -6,7 +6,7 @@ const QuestionCard = ({question,onClick,setAnswer,addAnswer}: any) => {
   const [open, setOpen] = useState(false)
   return (
       <div>
-        <Card className="mx-5 my-5 max-w-xs md:max-w-3xl">
+        <Card className="mx-auto my-5 max-w-xs md:max-w-3xl">
           <CardBody>
             <div className="flex flex-row justify-between items-center mb-2">
               <Text className="font-shippori text-md text-red-700">Question</Text>
