@@ -9,6 +9,7 @@ import QuestionCard from "@/components/questionCard"
 
 const Joined = () => {
   const [question, setQuestion] = useState('')
+  const [slowModeDuration, setSlowModeDuration] = useState(0)
   interface QuestionProvider {
     question: string,
     answer: string,
@@ -39,6 +40,7 @@ const Joined = () => {
     await onSnapshot(doc(firestore, 'rooms', String(roomCode)), (docSnap) => {
       let data = docSnap.data()
       setQuestions(data?.questions.reverse())
+      setSlowModeDuration(data?.slowMode)
     })
   }
 
@@ -54,7 +56,7 @@ const Joined = () => {
         difference = end.diff(start,"seconds").toObject().seconds as number | 0
       }
     }
-    if (difference >= 5) {
+    if (difference >= slowModeDuration) {
       setError('')
       let roomCode = localStorage.getItem('joinedRoom')
       const ref = doc(firestore, "rooms", String(roomCode))

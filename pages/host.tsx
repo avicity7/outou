@@ -1,4 +1,4 @@
-import { Stack, Text, Textarea, Spinner, Card, CardBody } from "@chakra-ui/react"
+import { Stack, Text, Textarea, Spinner, Card, CardBody, Checkbox, NumberInput, NumberInputField } from "@chakra-ui/react"
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useEffect, useState } from "react"
 import { getDocs, setDoc, doc, collection, onSnapshot, deleteDoc } from "@firebase/firestore"
@@ -34,6 +34,7 @@ const createRoom = async () => {
       localStorage.setItem('accessCode',String(rand(30,36)))
     }
     let data = {
+      slowMode: 0,
       questions: [],
       accessCode: localStorage.getItem('accessCode')
     }
@@ -56,6 +57,8 @@ const Host = () => {
   const [questions, setQuestions] =  useState<any | null>([])
   const [answer, setAnswer] = useState('')
   const [refresh, setRefresh] = useState(false)
+  const [slowModeActive, setSlowModeActive] = useState(false)
+  const [slowModeDuration, setSlowModeDuration] = useState(0)
   let [copyIsOpen, setCopyIsOpen] = useState(false)
   let [closeRoomIsOpen, setCloseRoomIsOpen] = useState(false)
 
@@ -101,7 +104,21 @@ const Host = () => {
       questions: questions
     }
     try {
-      setDoc(ref,data)
+      setDoc(ref,data,{merge: true})
+      localStorage.setItem('room',String(roomCode))
+    }
+    catch(err) {
+      console.log(err)
+    }
+  }
+
+  const editSlowMode = async (duration: number) => {
+    const ref = doc(firestore, "rooms", String(roomCode))
+    let data = {
+      slowMode: duration
+    }
+    try {
+      setDoc(ref,data,{merge: true})
       localStorage.setItem('room',String(roomCode))
     }
     catch(err) {
@@ -130,6 +147,7 @@ const Host = () => {
       await createRoom()
       let roomCode = localStorage.getItem('room')
       setRoomCode(roomCode as any)
+      setSlowModeDuration(0)
     }
 
     if (localStorage.getItem('room') === null || localStorage.getItem('room') === '') {
@@ -201,11 +219,27 @@ const Host = () => {
                   </div>
                 </Dialog>
               </Transition>
-              <div className="mt-5 pb-10">
+              <Stack className="pt-3 pb-10 flex items-center">
+                <Checkbox isChecked={slowModeActive} onChange={(e) => {setSlowModeActive(e.target.checked);e.target.checked === true ? editSlowMode(slowModeDuration) : editSlowMode(0);setSlowModeDuration(0)}}>Slow Mode</Checkbox>
+                {slowModeActive && 
+                  <div className="flex flex-row justify-center items-center"> 
+                    <NumberInput value={slowModeDuration} className="w-[30%]">
+                      <NumberInputField onChange={(e) => {
+                        if (isNaN(parseInt(e.target.value)) === false) {
+                        editSlowMode(parseInt(e.target.value));setSlowModeDuration(parseInt(e.target.value))
+                        } else {
+                          setSlowModeDuration(0)
+                          editSlowMode(0)
+                        }
+                      }}></NumberInputField>
+                    </NumberInput>
+                    <Text className="font-outfit ml-2">secs</Text>
+                  </div>
+                }
                 <button onClick={copyLink}>
                 <Text className="text-sm text-blue-400 hover:text-blue-500">Share Admin Access</Text>
                 </button>
-              </div>
+              </Stack>
               <Transition appear show={copyIsOpen} as={Fragment}>
                 <Dialog as="div" className="relative z-10" onClose={closeCopy}>
                   <Transition.Child
