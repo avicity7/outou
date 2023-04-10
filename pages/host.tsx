@@ -220,7 +220,7 @@ const Host = () => {
                 </Dialog>
               </Transition>
               <Stack className="pt-3 pb-10 flex items-center">
-                <Checkbox isChecked={slowModeActive} onChange={(e) => {setSlowModeActive(e.target.checked);e.target.checked === true ? editSlowMode(slowModeDuration) : editSlowMode(0);setSlowModeDuration(0)}}>Slow Mode</Checkbox>
+                {/* <Checkbox isChecked={slowModeActive} onChange={(e) => {setSlowModeActive(e.target.checked);e.target.checked === true ? editSlowMode(slowModeDuration) : editSlowMode(0);setSlowModeDuration(0)}}>Slow Mode</Checkbox> */}
                 {slowModeActive && 
                   <div className="flex flex-row justify-center items-center"> 
                     <NumberInput value={slowModeDuration} className="w-[30%]">
